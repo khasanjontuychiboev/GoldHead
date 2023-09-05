@@ -1,19 +1,42 @@
 package com.akaxon.goldhead.country;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/country")
 public class CountryController {
+    private final CountryService countryService;
+
+    @Autowired
+    public CountryController(CountryService countryService) {
+        this.countryService = countryService;
+    }
+
     @GetMapping
-    public void getAllCountries(){
-        System.out.println("hello countries!");
+    public List<Country> getAllCountry(){
+        return countryService.getAllCountry();
     }
-    @GetMapping(path = "/{id}")
-    public void getCountry(@PathVariable("id") String id){
-        System.out.println("One Country By ID");
+
+    @GetMapping("/{name}")
+    public Country getCountryByName(@PathVariable("name") String name){
+        return countryService.getCountryByName(name);
     }
+
+
+    @GetMapping("/{name}/cities")
+    public CountryWithCities getCountryByNameWithCities(@PathVariable("name") String name){
+        return countryService.getCountryByNameWithCities(name);
+    }
+
+    @PostMapping
+    public String createNewCountry(@RequestBody @Valid Country country){
+        return countryService.createNewCountry(country);
+    }
+
+
+
 }
